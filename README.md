@@ -4,8 +4,6 @@
 [![Tests](https://img.shields.io/github/actions/workflow/status/the-pulli/emate/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/the-pulli/emate/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/pulli/emate.svg?style=flat-square)](https://packagist.org/packages/pulli/emate)
 
-This is where your description should go. Try and limit it to a paragraph or two. Consider adding a small example.
-
 ## Installation
 
 You can install the package via composer:
