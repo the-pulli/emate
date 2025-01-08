@@ -34,7 +34,7 @@ $emate = \Pulli\Emate\Emate::from([
     'sign' => false, // boolean
     'send_now' => false, // boolean
     'encryption_mode' => 'openpgp', // string: mime or openpgp
-]);
+])->mail();
 ```
 
 ## Testing
