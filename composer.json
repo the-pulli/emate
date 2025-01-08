@@ -1,0 +1,53 @@
+{
+    "name": "pulli/emate",
+    "description": "Wrapper for MailMate's emate CLI",
+    "keywords": [
+        "pulli",
+        "emate",
+        "mailmate"
+    ],
+    "homepage": "https://github.com/the-pulli/emate",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "PuLLi",
+            "email": "the@pulli.dev",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "illuminate/collections": "^10.0|^11.0",
+        "symfony/mime": "^7.2"
+    },
+    "require-dev": {
+        "egulias/email-validator": "^4.0",
+        "laravel/pint": "^1.0",
+        "pestphp/pest": "^3.0",
+        "spatie/ray": "^1.28"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pulli\\Emate\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Pulli\\Emate\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
