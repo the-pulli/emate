@@ -17,7 +17,7 @@ final class Emate
 
     private const string SYMLINK_TARGET = '/Applications/MailMate.app/Contents/Resources/emate';
 
-    private const string SYMLINK_DESTINATION = "\$HOME/bin";
+    private const string SYMLINK_DESTINATION = '$HOME/bin';
 
     private string $commandString;
 
