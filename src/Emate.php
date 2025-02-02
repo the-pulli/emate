@@ -11,13 +11,13 @@ use Symfony\Component\Mime\Address;
 
 final class Emate
 {
-    private const array ENCRYPTION_MODES = ['openpgp', 'mime'];
+    private static array $encryptionModes = ['openpgp', 'mime'];
 
-    private const array TRUTHY_VALUES = ['yes', 'true', true];
+    private static array $truthyValues = ['yes', 'true', true];
 
-    private const string SYMLINK_TARGET = '/Applications/MailMate.app/Contents/Resources/emate';
+    private static string $symlinkTarget = '/Applications/MailMate.app/Contents/Resources/emate';
 
-    private const string SYMLINK_DESTINATION = '$HOME/bin';
+    private static string $symlinkDestination = '$HOME/bin';
 
     private string $commandString;
 
@@ -82,13 +82,13 @@ final class Emate
      */
     public static function symlink(?string $folder = null): bool
     {
-        $target = self::SYMLINK_TARGET;
+        $target = self::$symlinkTarget;
 
         if (! file_exists($target)) {
             throw new RuntimeException("MailMate is not installed. The emate command could not be found here: '$target'.");
         }
 
-        $destination = $folder ?? self::SYMLINK_DESTINATION;
+        $destination = $folder ?? self::$symlinkDestination;
         $link = $destination.'/emate';
 
         if (file_exists($link)) {
@@ -161,7 +161,7 @@ final class Emate
             ['value' => $this->encrypt, 'truthy_flag' => ' --encrypt', 'falsy_flag' => ' --noencrypt'],
             ['value' => $this->sign, 'truthy_flag' => ' --sign', 'falsy_flag' => ' --nosign'],
         ])
-            ->map(fn (array $value) => in_array($value['value'], self::TRUTHY_VALUES) ? $value['truthy_flag'] : $value['falsy_flag'])
+            ->map(fn (array $value) => in_array($value['value'], self::$truthyValues) ? $value['truthy_flag'] : $value['falsy_flag'])
             ->toArray();
     }
 
@@ -180,11 +180,11 @@ final class Emate
      */
     private function checkForEncryptionMode(): void
     {
-        if (in_array($this->encryptionMode, self::ENCRYPTION_MODES)) {
+        if (in_array($this->encryptionMode, self::$encryptionModes)) {
             return;
         }
 
-        throw new InvalidArgumentException('Invalid encryption mode. Possible values are: '.implode(', ', self::ENCRYPTION_MODES));
+        throw new InvalidArgumentException('Invalid encryption mode. Possible values are: '.implode(', ', self::$encryptionModes));
     }
 
     private function buildConsoleStatement(mixed $address, string $kind): string
