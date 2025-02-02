@@ -114,14 +114,14 @@ final class Emate
 
     private function commandString(): string
     {
-        return Collection::make(array_merge(
+        return implode('', array_merge(
             $this->preamble(),
             $this->normalFlags(),
             $this->filesFlag(),
             $this->booleanFlags(),
             $this->markdownMode(),
             $this->encryptionMode(),
-        ))->implode('');
+        ));
     }
 
     private function preamble(): array
@@ -225,7 +225,7 @@ final class Emate
 
                 return $this->splitString($address)
                     ->map(function (string $line) {
-                        preg_match('/(.+) <(.+)>/', $line, $match);
+                        preg_match('/"?([^".]+)"? <(.+)>/', $line, $match);
 
                         if ($match) {
                             $name = $match[1];

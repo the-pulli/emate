@@ -22,6 +22,18 @@ it('can send a mail with one recipient and simple body', function () {
         ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
 });
 
+it('can send a mail with one recipient and simple body and quoted name', function () {
+    $options = [
+        'to' => '"The PuLLi" <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"The PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+});
+
 it('can send a mail with one recipient and markdown body', function () {
     $options = [
         'to' => 'PuLLi <the@pulli.dev>',
