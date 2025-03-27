@@ -126,9 +126,7 @@ final class Emate
 
     private function preamble(): array
     {
-        $body = escapeshellarg($this->body);
-
-        return ['preamble' => "echo $body | \$HOME/bin/emate mailto"];
+        return ['preamble' => "echo '$this->body' | \$HOME/bin/emate mailto"];
     }
 
     private function normalFlags(): array

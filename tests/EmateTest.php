@@ -47,6 +47,19 @@ it('can send a mail with one recipient and markdown body', function () {
         ->toBe("echo 'Hello **bold**' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --markup 'markdown'");
 });
 
+it('can send a mail with umlaute in body', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello äüö',
+        'subject' => 'Test',
+        'markdown' => true,
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello äüö' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --markup 'markdown'");
+});
+
 it('can send a mail with one recipient as symfony address object with reply_to', function () {
     $options = [
         'to' => new Address('the@pulli.dev', 'PuLLi'),
