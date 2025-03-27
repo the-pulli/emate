@@ -130,7 +130,7 @@ it('can send a multiline message with single quotes to more than one recipient',
     ];
 
     expect(emate($options))
-        ->toBe("echo 'Hello\n\n'\''With two new lines'\''' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --to '\"Notifications\" <notfications@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+        ->toBe("echo 'Hello\n\n'With two new lines'' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --to '\"Notifications\" <notfications@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
 });
 
 it('can send an encrypted message to one recipient with default encryption mode (openpgp)', function () {
