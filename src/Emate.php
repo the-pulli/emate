@@ -223,7 +223,7 @@ final class Emate
 
                 return $this->splitString($address)
                     ->map(function (string $line) {
-                        preg_match('/"?([^".]+)"? <(.+)>/', $line, $match);
+                        preg_match('/"?([^"]+)"? <(.+)>/', $line, $match);
 
                         if ($match) {
                             $name = $match[1];
