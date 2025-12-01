@@ -23,7 +23,7 @@
     "require-dev": {
         "egulias/email-validator": "^4.0",
         "laravel/pint": "^1.0",
-        "pestphp/pest": "^3.0",
+        "pestphp/pest": "^4.0",
         "spatie/ray": "^1.28"
     },
     "autoload": {
