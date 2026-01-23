@@ -142,7 +142,7 @@ it('can send a multiline message with single quotes to more than one recipient',
     ];
 
     expect(emate($options))
-        ->toBe("echo 'Hello\n\n'With two new lines'' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --to '\"Notifications\" <notfications@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+        ->toBe("echo 'Hello\n\n'\\''With two new lines'\\''' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --to '\"Notifications\" <notfications@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
 });
 
 it('can send an encrypted message to one recipient with default encryption mode (openpgp)', function () {
@@ -263,4 +263,226 @@ it('can send a simple message with two files passed as associative array', funct
 
     expect(emate($options))
         ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' '/home/rainbow.txt' '/home/pride.txt' --noencrypt --nosign");
+});
+
+it('can send a mail with cc recipients as string', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'cc' => 'cc@example.com',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --cc 'cc@example.com' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+});
+
+it('can send a mail with cc recipients as array', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'cc' => ['cc1@example.com', 'cc2@example.com'],
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --cc 'cc1@example.com' --cc 'cc2@example.com' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+});
+
+it('can send a mail with cc recipients as Address objects', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'cc' => [new Address('cc@example.com', 'CC User')],
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --cc '\"CC User\" <cc@example.com>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+});
+
+it('can send a mail with bcc recipients as string', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'bcc' => 'bcc@example.com',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --bcc 'bcc@example.com' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+});
+
+it('can send a mail with bcc recipients as array', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'bcc' => ['bcc1@example.com', 'bcc2@example.com'],
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --bcc 'bcc1@example.com' --bcc 'bcc2@example.com' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+});
+
+it('can send a mail with bcc recipients as Address objects', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'bcc' => [new Address('bcc@example.com', 'BCC User')],
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --bcc '\"BCC User\" <bcc@example.com>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+});
+
+it('can send a mail with send_now flag as true', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'send_now' => true,
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --send-now --noencrypt --nosign");
+});
+
+it('can send a mail with send_now flag as yes string', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'send_now' => 'yes',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --send-now --noencrypt --nosign");
+});
+
+it('can send a mail with send_now flag as true string', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'send_now' => 'true',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --send-now --noencrypt --nosign");
+});
+
+it('does not send now when send_now is false', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'send_now' => false,
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+});
+
+it('can send a mail with reply_to as plain string', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'reply_to' => 'reply@example.com',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --replyto 'reply@example.com' --noencrypt --nosign");
+});
+
+it('can send a signed message with mime encryption mode', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'sign' => true,
+        'encryption_mode' => 'mime',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --sign --mime");
+});
+
+it('can send an encrypted message with encrypt as yes string', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'encrypt' => 'yes',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --openpgp");
+});
+
+it('can send a signed message with sign as true string', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'sign' => 'true',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --sign --openpgp");
+});
+
+it('can send a mail with a single file as string', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'files' => '/home/rainbow.txt',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' '/home/rainbow.txt' --noencrypt --nosign");
+});
+
+it('properly escapes shell special characters in body', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello $USER `whoami` $(id)',
+        'subject' => 'Test',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello \$USER `whoami` \$(id)' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+});
+
+it('can use EncryptionMode enum directly', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'encrypt' => true,
+        'encryption_mode' => \Pulli\Emate\EncryptionMode::MIME,
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --mime");
 });

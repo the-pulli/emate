@@ -11,8 +11,6 @@ use Symfony\Component\Mime\Address;
 
 final class Emate
 {
-    private static array $encryptionModes = ['openpgp', 'mime'];
-
     private static array $truthyValues = ['yes', 'true', true];
 
     private static string $symlinkTarget = '/Applications/MailMate.app/Contents/Resources/emate';
@@ -27,7 +25,7 @@ final class Emate
 
     private Address|string $from;
 
-    private Address|string $subject;
+    private string $subject;
 
     private Address|array|string $cc;
 
@@ -39,13 +37,13 @@ final class Emate
 
     private bool $markdown;
 
-    private bool $encrypt;
+    private bool|string $encrypt;
 
-    private bool $sign;
+    private bool|string $sign;
 
-    private bool $sendNow;
+    private bool|string $sendNow;
 
-    private string $encryptionMode;
+    private EncryptionMode $encryptionMode;
 
     /**
      * @throws InvalidArgumentException
@@ -66,9 +64,12 @@ final class Emate
         $this->encrypt = $options->get('encrypt', false);
         $this->sign = $options->get('sign', false);
         $this->sendNow = $options->get('send_now', false);
-        $this->encryptionMode = mb_strtolower($options->get('encryption_mode', 'openpgp'));
+        $encryptionMode = $options->get('encryption_mode', 'openpgp');
+        $this->encryptionMode = $encryptionMode instanceof EncryptionMode
+            ? $encryptionMode
+            : EncryptionMode::tryFrom(mb_strtolower($encryptionMode))
+                ?? throw new InvalidArgumentException('Invalid encryption mode. Possible values are: openpgp, mime');
 
-        $this->checkForEncryptionMode();
         $this->commandString = $this->commandString();
     }
 
@@ -126,7 +127,7 @@ final class Emate
 
     private function preamble(): array
     {
-        return ['preamble' => "echo '$this->body' | \$HOME/bin/emate mailto"];
+        return ['preamble' => 'echo '.escapeshellarg($this->body).' | $HOME/bin/emate mailto'];
     }
 
     private function normalFlags(): array
@@ -170,19 +171,7 @@ final class Emate
 
     private function encryptionMode(): array
     {
-        return ['encryption_mode' => $this->encrypt || $this->sign ? " --$this->encryptionMode" : ''];
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    private function checkForEncryptionMode(): void
-    {
-        if (in_array($this->encryptionMode, self::$encryptionModes)) {
-            return;
-        }
-
-        throw new InvalidArgumentException('Invalid encryption mode. Possible values are: '.implode(', ', self::$encryptionModes));
+        return ['encryption_mode' => $this->encrypt || $this->sign ? " --{$this->encryptionMode->value}" : ''];
     }
 
     private function buildConsoleStatement(mixed $address, string $kind): string
