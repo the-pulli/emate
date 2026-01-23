@@ -2,6 +2,10 @@
 
 All notable changes to `emate` will be documented in this file.
 
+## v1.0.5 - 2026-01-23
+
+**Full Changelog**: https://github.com/the-pulli/emate/compare/v1.0.4...v1.0.5
+
 ## v1.0.3 - 2026-01-23
 
 ### What's Changed
