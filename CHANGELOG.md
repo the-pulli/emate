@@ -2,6 +2,43 @@
 
 All notable changes to `emate` will be documented in this file.
 
+## v2.1.0 - 2026-01-23
+
+### Breaking Changes
+
+- **Removed `illuminate/collections` dependency** — all internal usage replaced with plain PHP array functions. If you relied on this as a transitive dependency, add it to your own `composer.json`.
+- **`mail()` now throws `RuntimeException` on failure** — previously exit codes were silently discarded.
+- **`symlink()` default path fixed** — now correctly resolves `$HOME` via `getenv('HOME')` instead of using an unexpandable literal string.
+
+### New Features
+
+- **Fluent Builder API** — new `Emate::compose()` static factory with chainable setters:
+  ```php
+  Emate::compose()
+      ->to('recipient@example.com')
+      ->sender('sender@example.com')
+      ->subject('Hello')
+      ->body('Email body')
+      ->markdown()
+      ->encrypt()
+      ->sign()
+      ->sendNow()
+      ->encryptionMode(EncryptionMode::MIME)
+      ->mail();
+  ```
+- **`markdown` option now accepts truthy strings** — recognizes `true`, `'yes'`, and `'true'` (same as `encrypt`, `sign`, `send_now`).
+
+### Fixes
+
+- **Changelog workflow** — added concurrency group and `git pull --rebase` to prevent failures from simultaneous release events.
+
+### Internal
+
+- Simplified all command-building methods to return strings directly instead of keyed arrays.
+- Replaced `Collection`-based data flow with `array_map`/`implode`/`explode`.
+
+See [UPGRADE.md](UPGRADE.md) for migration details.
+
 ## v1.1.0 - 2026-01-23
 
 ### What's Changed
