@@ -204,6 +204,40 @@ Emate::from([
 ])->mail();
 ```
 
+### Fluent Builder
+
+Use `Emate::compose()` for a fluent builder API instead of passing an options array:
+
+```php
+use Pulli\Emate\Emate;
+use Pulli\Emate\EncryptionMode;
+
+// Basic email
+Emate::compose()
+    ->to('recipient@example.com')
+    ->sender('sender@example.com')
+    ->subject('Hello')
+    ->body('This is the email body.')
+    ->mail();
+
+// With all options
+Emate::compose()
+    ->to(['alice@example.com', 'Bob <bob@example.com>'])
+    ->sender('sender@example.com')
+    ->cc('manager@example.com')
+    ->bcc('archive@example.com')
+    ->replyTo('replies@example.com')
+    ->subject('Full example')
+    ->body('# Heading\n\nMarkdown body.')
+    ->files(['/path/to/report.pdf'])
+    ->markdown()
+    ->encrypt()
+    ->sign()
+    ->sendNow()
+    ->encryptionMode(EncryptionMode::MIME)
+    ->mail();
+```
+
 ### Debugging
 
 Use `debug()` instead of `mail()` to inspect the generated shell command without executing it:
@@ -232,7 +266,7 @@ echo $command;
 | `bcc` | `string\|array\|Address` | `[]` | BCC recipient(s) |
 | `reply_to` | `string\|Address` | `''` | Reply-to address |
 | `files` | `string\|array` | `[]` | File path(s) to attach |
-| `markdown` | `bool` | `false` | Render body as Markdown |
+| `markdown` | `bool\|string` | `false` | Render body as Markdown (`true`, `'yes'`, `'true'`) |
 | `encrypt` | `bool\|string` | `false` | Encrypt the message (`true`, `'yes'`, `'true'`) |
 | `sign` | `bool\|string` | `false` | Sign the message (`true`, `'yes'`, `'true'`) |
 | `send_now` | `bool\|string` | `false` | Send immediately (`true`, `'yes'`, `'true'`) |

@@ -486,3 +486,110 @@ it('can use EncryptionMode enum directly', function () {
     expect(emate($options))
         ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --mime");
 });
+
+it('can send a mail with markdown as truthy string yes', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello **bold**',
+        'subject' => 'Test',
+        'markdown' => 'yes',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello **bold**' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --markup 'markdown'");
+});
+
+it('can compose a mail using fluent builder', function () {
+    $command = Emate::compose()
+        ->to('PuLLi <the@pulli.dev>')
+        ->sender('the@l33tdump.com')
+        ->subject('Test')
+        ->body('Hello')
+        ->debug();
+
+    expect($command)
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign");
+});
+
+it('can compose a mail with encrypt using fluent builder', function () {
+    $command = Emate::compose()
+        ->to('PuLLi <the@pulli.dev>')
+        ->sender('the@l33tdump.com')
+        ->subject('Test')
+        ->body('Hello')
+        ->encrypt()
+        ->debug();
+
+    expect($command)
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --openpgp");
+});
+
+it('can compose a mail with sign using fluent builder', function () {
+    $command = Emate::compose()
+        ->to('PuLLi <the@pulli.dev>')
+        ->sender('the@l33tdump.com')
+        ->subject('Test')
+        ->body('Hello')
+        ->sign()
+        ->debug();
+
+    expect($command)
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --sign --openpgp");
+});
+
+it('can compose a mail with sendNow using fluent builder', function () {
+    $command = Emate::compose()
+        ->to('PuLLi <the@pulli.dev>')
+        ->sender('the@l33tdump.com')
+        ->subject('Test')
+        ->body('Hello')
+        ->sendNow()
+        ->debug();
+
+    expect($command)
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --send-now --noencrypt --nosign");
+});
+
+it('can compose a mail with markdown using fluent builder', function () {
+    $command = Emate::compose()
+        ->to('PuLLi <the@pulli.dev>')
+        ->sender('the@l33tdump.com')
+        ->subject('Test')
+        ->body('Hello **bold**')
+        ->markdown()
+        ->debug();
+
+    expect($command)
+        ->toBe("echo 'Hello **bold**' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --markup 'markdown'");
+});
+
+it('can compose a mail with encryption mode using fluent builder', function () {
+    $command = Emate::compose()
+        ->to('PuLLi <the@pulli.dev>')
+        ->sender('the@l33tdump.com')
+        ->subject('Test')
+        ->body('Hello')
+        ->encrypt()
+        ->encryptionMode(\Pulli\Emate\EncryptionMode::MIME)
+        ->debug();
+
+    expect($command)
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --mime");
+});
+
+it('can compose a mail with cc, bcc, files, and replyTo using fluent builder', function () {
+    $command = Emate::compose()
+        ->to('PuLLi <the@pulli.dev>')
+        ->sender('the@l33tdump.com')
+        ->subject('Test')
+        ->body('Hello')
+        ->cc('cc@example.com')
+        ->bcc('bcc@example.com')
+        ->replyTo('reply@example.com')
+        ->files('/home/rainbow.txt')
+        ->debug();
+
+    expect($command)
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --cc 'cc@example.com' --bcc 'bcc@example.com' --subject 'Test' --from 'the@l33tdump.com' --replyto 'reply@example.com' '/home/rainbow.txt' --noencrypt --nosign");
+});
