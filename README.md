@@ -170,6 +170,25 @@ Emate::from([
     'encrypt' => true,
 ])->mail();
 
+// Sign with OpenPGP (default)
+Emate::from([
+    'to' => 'recipient@example.com',
+    'from' => 'sender@example.com',
+    'subject' => 'Signed',
+    'body' => 'Verified content.',
+    'sign' => true,
+])->mail();
+
+// Encrypt and sign with OpenPGP (default)
+Emate::from([
+    'to' => 'recipient@example.com',
+    'from' => 'sender@example.com',
+    'subject' => 'Secure',
+    'body' => 'Encrypted and signed.',
+    'encrypt' => true,
+    'sign' => true,
+])->mail();
+
 // Sign with S/MIME
 Emate::from([
     'to' => 'recipient@example.com',
@@ -180,7 +199,7 @@ Emate::from([
     'encryption_mode' => 'mime',
 ])->mail();
 
-// Encrypt and sign, using the enum directly
+// Encrypt and sign with S/MIME, using the enum directly
 Emate::from([
     'to' => 'recipient@example.com',
     'from' => 'sender@example.com',
