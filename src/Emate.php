@@ -40,6 +40,10 @@ final class Emate
 
     private EncryptionMode $encryptionMode = EncryptionMode::OpenPGP;
 
+    private string $signature = '';
+
+    private array $headers = [];
+
     /**
      * @throws InvalidArgumentException
      */
@@ -57,11 +61,10 @@ final class Emate
         $this->encrypt = $options['encrypt'] ?? false;
         $this->sign = $options['sign'] ?? false;
         $this->sendNow = $options['send_now'] ?? false;
+        $this->signature = $options['signature'] ?? '';
+        $this->headers = $options['headers'] ?? [];
         $encryptionMode = $options['encryption_mode'] ?? 'openpgp';
-        $this->encryptionMode = $encryptionMode instanceof EncryptionMode
-            ? $encryptionMode
-            : EncryptionMode::tryFrom(mb_strtolower($encryptionMode))
-                ?? throw new InvalidArgumentException('Invalid encryption mode. Possible values are: openpgp, mime');
+        $this->encryptionMode = $this->resolveEncryptionMode($encryptionMode);
     }
 
     public static function from(array $options = []): self
@@ -163,10 +166,21 @@ final class Emate
      */
     public function encryptionMode(EncryptionMode|string $mode): self
     {
-        $this->encryptionMode = $mode instanceof EncryptionMode
-            ? $mode
-            : EncryptionMode::tryFrom(mb_strtolower($mode))
-                ?? throw new InvalidArgumentException('Invalid encryption mode. Possible values are: openpgp, mime');
+        $this->encryptionMode = $this->resolveEncryptionMode($mode);
+
+        return $this;
+    }
+
+    public function signature(string $signature): self
+    {
+        $this->signature = $signature;
+
+        return $this;
+    }
+
+    public function header(string $name, string $value): self
+    {
+        $this->headers[] = "$name: $value";
 
         return $this;
     }
@@ -220,6 +234,8 @@ final class Emate
             .$this->filesFlag()
             .$this->booleanFlags()
             .$this->markdownFlag()
+            .$this->signatureFlag()
+            .$this->headersFlag()
             .$this->encryptionModeFlag();
     }
 
@@ -274,9 +290,41 @@ final class Emate
         return in_array($this->markdown, self::$truthyValues) ? " --markup 'markdown'" : '';
     }
 
+    private function signatureFlag(): string
+    {
+        return mb_strlen($this->signature) > 0 ? ' --signature '.escapeshellarg($this->signature) : '';
+    }
+
+    private function headersFlag(): string
+    {
+        return implode('', array_map(
+            fn (string $header) => ' --header '.escapeshellarg($header),
+            $this->headers,
+        ));
+    }
+
     private function encryptionModeFlag(): string
     {
         return $this->encrypt || $this->sign ? " --{$this->encryptionMode->value}" : '';
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    private function resolveEncryptionMode(EncryptionMode|string $mode): EncryptionMode
+    {
+        if ($mode instanceof EncryptionMode) {
+            return $mode;
+        }
+
+        $normalized = mb_strtolower($mode);
+
+        if ($normalized === 'mime') {
+            $normalized = 'smime';
+        }
+
+        return EncryptionMode::tryFrom($normalized)
+            ?? throw new InvalidArgumentException('Invalid encryption mode. Possible values are: openpgp, smime');
     }
 
     private function buildConsoleStatement(mixed $address, string $kind): string

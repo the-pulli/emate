@@ -7,5 +7,5 @@ namespace Pulli\Emate;
 enum EncryptionMode: string
 {
     case OpenPGP = 'openpgp';
-    case MIME = 'mime';
+    case SMIME = 'smime';
 }

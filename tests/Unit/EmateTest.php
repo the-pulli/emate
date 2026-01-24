@@ -107,7 +107,7 @@ it('raises an exception, if one pass an invalid argument for encryption mode', f
     ];
 
     Emate::from($options);
-})->throws(InvalidArgumentException::class, 'Invalid encryption mode. Possible values are: openpgp, mime');
+})->throws(InvalidArgumentException::class, 'Invalid encryption mode. Possible values are: openpgp, smime');
 
 it('can send a multiline message to more than one recipient', function () {
     $options = [
@@ -169,7 +169,7 @@ it('can send an encrypted message to one recipient with mime encryption', functi
     ];
 
     expect(emate($options))
-        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --mime");
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --smime");
 });
 
 it('can send an encrypted message to one recipient with mime encryption as capitalized parameter', function () {
@@ -183,7 +183,7 @@ it('can send an encrypted message to one recipient with mime encryption as capit
     ];
 
     expect(emate($options))
-        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --mime");
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --smime");
 });
 
 it('can send a signed message to one recipient', function () {
@@ -419,7 +419,7 @@ it('can send a signed message with mime encryption mode', function () {
     ];
 
     expect(emate($options))
-        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --sign --mime");
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --sign --smime");
 });
 
 it('can send an encrypted message with encrypt as yes string', function () {
@@ -480,11 +480,11 @@ it('can use EncryptionMode enum directly', function () {
         'body' => 'Hello',
         'subject' => 'Test',
         'encrypt' => true,
-        'encryption_mode' => \Pulli\Emate\EncryptionMode::MIME,
+        'encryption_mode' => \Pulli\Emate\EncryptionMode::SMIME,
     ];
 
     expect(emate($options))
-        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --mime");
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --smime");
 });
 
 it('can send a mail with markdown as truthy string yes', function () {
@@ -571,11 +571,11 @@ it('can compose a mail with encryption mode using fluent builder', function () {
         ->subject('Test')
         ->body('Hello')
         ->encrypt()
-        ->encryptionMode(\Pulli\Emate\EncryptionMode::MIME)
+        ->encryptionMode(\Pulli\Emate\EncryptionMode::SMIME)
         ->debug();
 
     expect($command)
-        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --mime");
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --smime");
 });
 
 it('can compose a mail with cc, bcc, files, and replyTo using fluent builder', function () {
@@ -592,4 +592,84 @@ it('can compose a mail with cc, bcc, files, and replyTo using fluent builder', f
 
     expect($command)
         ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --cc 'cc@example.com' --bcc 'bcc@example.com' --subject 'Test' --from 'the@l33tdump.com' --replyto 'reply@example.com' '/home/rainbow.txt' --noencrypt --nosign");
+});
+
+it('can send a mail with a signature', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'signature' => 'Best regards, PuLLi',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --signature 'Best regards, PuLLi'");
+});
+
+it('can send a mail with a signature uuid', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'signature' => 'uuid:12345-abcde',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --signature 'uuid:12345-abcde'");
+});
+
+it('can send a mail with custom headers', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'headers' => ['X-Priority: 1', 'X-Custom: value'],
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --header 'X-Priority: 1' --header 'X-Custom: value'");
+});
+
+it('can compose a mail with signature using fluent builder', function () {
+    $command = Emate::compose()
+        ->to('PuLLi <the@pulli.dev>')
+        ->sender('the@l33tdump.com')
+        ->subject('Test')
+        ->body('Hello')
+        ->signature('Best regards, PuLLi')
+        ->debug();
+
+    expect($command)
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --signature 'Best regards, PuLLi'");
+});
+
+it('can compose a mail with headers using fluent builder', function () {
+    $command = Emate::compose()
+        ->to('PuLLi <the@pulli.dev>')
+        ->sender('the@l33tdump.com')
+        ->subject('Test')
+        ->body('Hello')
+        ->header('X-Priority', '1')
+        ->header('X-Custom', 'value')
+        ->debug();
+
+    expect($command)
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --header 'X-Priority: 1' --header 'X-Custom: value'");
+});
+
+it('can send a mail with encryption_mode smime as string', function () {
+    $options = [
+        'to' => 'PuLLi <the@pulli.dev>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+        'encrypt' => true,
+        'encryption_mode' => 'smime',
+    ];
+
+    expect(emate($options))
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --encrypt --nosign --smime");
 });

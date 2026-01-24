@@ -196,7 +196,7 @@ Emate::from([
     'subject' => 'Signed',
     'body' => 'Verified content.',
     'sign' => true,
-    'encryption_mode' => 'mime',
+    'encryption_mode' => 'smime',
 ])->mail();
 
 // Encrypt and sign with S/MIME, using the enum directly
@@ -207,7 +207,41 @@ Emate::from([
     'body' => 'Encrypted and signed.',
     'encrypt' => true,
     'sign' => true,
-    'encryption_mode' => EncryptionMode::MIME,
+    'encryption_mode' => EncryptionMode::SMIME,
+])->mail();
+```
+
+### Signature
+
+```php
+// Set a text signature
+Emate::from([
+    'to' => 'recipient@example.com',
+    'from' => 'sender@example.com',
+    'subject' => 'Hello',
+    'body' => 'Email body.',
+    'signature' => 'Best regards, PuLLi',
+])->mail();
+
+// Reference an existing signature by UUID
+Emate::from([
+    'to' => 'recipient@example.com',
+    'from' => 'sender@example.com',
+    'subject' => 'Hello',
+    'body' => 'Email body.',
+    'signature' => 'uuid:12345-abcde',
+])->mail();
+```
+
+### Custom Headers
+
+```php
+Emate::from([
+    'to' => 'recipient@example.com',
+    'from' => 'sender@example.com',
+    'subject' => 'Hello',
+    'body' => 'Email body.',
+    'headers' => ['X-Priority: 1', 'X-Mailer: My App'],
 ])->mail();
 ```
 
@@ -253,7 +287,9 @@ Emate::compose()
     ->encrypt()
     ->sign()
     ->sendNow()
-    ->encryptionMode(EncryptionMode::MIME)
+    ->encryptionMode(EncryptionMode::SMIME)
+    ->signature('Best regards')
+    ->header('X-Priority', '1')
     ->mail();
 ```
 
@@ -289,7 +325,9 @@ echo $command;
 | `encrypt` | `bool\|string` | `false` | Encrypt the message (`true`, `'yes'`, `'true'`) |
 | `sign` | `bool\|string` | `false` | Sign the message (`true`, `'yes'`, `'true'`) |
 | `send_now` | `bool\|string` | `false` | Send immediately (`true`, `'yes'`, `'true'`) |
-| `encryption_mode` | `string\|EncryptionMode` | `'openpgp'` | Encryption mode: `'openpgp'` or `'mime'` |
+| `encryption_mode` | `string\|EncryptionMode` | `'openpgp'` | Encryption mode: `'openpgp'` or `'smime'` |
+| `signature` | `string` | `''` | Signature text or `'uuid:<uuid>'` to reference an existing signature |
+| `headers` | `array` | `[]` | Arbitrary headers formatted as `'Name: Value'` strings |
 
 ## Testing
 

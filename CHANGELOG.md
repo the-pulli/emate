@@ -2,12 +2,13 @@
 
 All notable changes to `emate` will be documented in this file.
 
-## v2.1.0 - 2026-01-23
+## v2.1.0 - 2026-01-24
 
 ### Breaking Changes
 
 - **Removed `illuminate/collections` dependency** — all internal usage replaced with plain PHP array functions. If you relied on this as a transitive dependency, add it to your own `composer.json`.
 - **`mail()` now throws `RuntimeException` on failure** — previously exit codes were silently discarded.
+- **`EncryptionMode::MIME` renamed to `EncryptionMode::SMIME`** — the CLI flag is `--smime`, not `--mime`. String `'mime'` is still accepted as an alias.
 - **`symlink()` default path fixed** — now correctly resolves `$HOME` via `getenv('HOME')` instead of using an unexpandable literal string.
 
 ### New Features
@@ -23,13 +24,18 @@ All notable changes to `emate` will be documented in this file.
       ->encrypt()
       ->sign()
       ->sendNow()
-      ->encryptionMode(EncryptionMode::MIME)
+      ->encryptionMode(EncryptionMode::SMIME)
+      ->signature('Best regards')
+      ->header('X-Priority', '1')
       ->mail();
   ```
+- **Signature support** — set text or reference existing signature by UUID via `'signature'` option or `->signature()` fluent setter.
+- **Custom headers** — add arbitrary email headers via `'headers'` option or `->header('Name', 'Value')` fluent setter.
 - **`markdown` option now accepts truthy strings** — recognizes `true`, `'yes'`, and `'true'` (same as `encrypt`, `sign`, `send_now`).
 
 ### Fixes
 
+- **S/MIME encryption mode** — now generates correct `--smime` flag instead of invalid `--mime`.
 - **Changelog workflow** — added concurrency group and `git pull --rebase` to prevent failures from simultaneous release events.
 
 ### Internal

@@ -24,7 +24,24 @@ try {
 }
 ```
 
-#### 3. `symlink()` default path now correctly resolves `$HOME`
+#### 3. `EncryptionMode::MIME` renamed to `EncryptionMode::SMIME`
+
+The enum case was renamed and its value fixed from `'mime'` to `'smime'` to match the actual emate CLI flag (`--smime`). The string `'mime'` is still accepted as input for backward compatibility, but the enum case must be updated:
+
+```php
+// v2.0
+'encryption_mode' => EncryptionMode::MIME,
+'encryption_mode' => 'mime',
+
+// v2.1
+'encryption_mode' => EncryptionMode::SMIME,
+'encryption_mode' => 'smime', // preferred
+'encryption_mode' => 'mime',  // still works (alias)
+```
+
+If you compare `debug()` output in tests, update `--mime` to `--smime`.
+
+#### 4. `symlink()` default path now correctly resolves `$HOME`
 
 Previously, the default symlink destination was the literal string `'$HOME/bin'`, which PHP cannot expand. It now uses `getenv('HOME').'/bin'` to correctly resolve the user's home directory at runtime.
 
@@ -44,11 +61,36 @@ Emate::compose()
     ->encrypt()
     ->sign()
     ->sendNow()
-    ->encryptionMode(EncryptionMode::MIME)
+    ->encryptionMode(EncryptionMode::SMIME)
+    ->signature('Best regards')
+    ->header('X-Priority', '1')
     ->mail();
 ```
 
 Use `sender()` for the from-address (to avoid conflict with the `Emate::from()` static factory method).
+
+#### Signature support
+
+Set a text signature or reference an existing one by UUID:
+
+```php
+Emate::from(['signature' => 'Best regards', ...])->mail();
+Emate::from(['signature' => 'uuid:12345-abcde', ...])->mail();
+
+// Fluent
+Emate::compose()->signature('Best regards')->...->mail();
+```
+
+#### Custom headers
+
+Add arbitrary email headers:
+
+```php
+Emate::from(['headers' => ['X-Priority: 1', 'X-Mailer: My App'], ...])->mail();
+
+// Fluent
+Emate::compose()->header('X-Priority', '1')->...->mail();
+```
 
 #### `markdown` option now accepts truthy strings
 
