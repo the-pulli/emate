@@ -400,6 +400,6 @@ final class Emate
      */
     private function escapeArg(string $argument): string
     {
-        return "'" . str_replace("'", "'\\''", $argument) . "'";
+        return "'".str_replace("'", "'\\''", $argument)."'";
     }
 }
