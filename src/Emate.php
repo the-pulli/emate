@@ -241,7 +241,7 @@ final class Emate
 
     private function preamble(): string
     {
-        return 'echo '.escapeshellarg($this->body).' | $HOME/bin/emate mailto';
+        return 'echo '.$this->escapeArg($this->body).' | $HOME/bin/emate mailto';
     }
 
     private function normalFlags(): string
@@ -266,7 +266,7 @@ final class Emate
         $files = $this->convert($this->files);
 
         return implode('', array_map(
-            fn (string $file) => mb_strlen($file) > 0 ? ' '.escapeshellarg($file) : '',
+            fn (string $file) => mb_strlen($file) > 0 ? ' '.$this->escapeArg($file) : '',
             $files,
         ));
     }
@@ -292,13 +292,13 @@ final class Emate
 
     private function signatureFlag(): string
     {
-        return mb_strlen($this->signature) > 0 ? ' --signature '.escapeshellarg($this->signature) : '';
+        return mb_strlen($this->signature) > 0 ? ' --signature '.$this->escapeArg($this->signature) : '';
     }
 
     private function headersFlag(): string
     {
         return implode('', array_map(
-            fn (string $header) => ' --header '.escapeshellarg($header),
+            fn (string $header) => ' --header '.$this->escapeArg($header),
             $this->headers,
         ));
     }
@@ -336,7 +336,7 @@ final class Emate
         $parts = $this->convert($address);
 
         return implode('', array_map(
-            fn (string $address) => mb_strlen($address) > 0 ? implode('', [' ', $kind, ' ']).escapeshellarg($address) : '',
+            fn (string $address) => mb_strlen($address) > 0 ? implode('', [' ', $kind, ' ']).$this->escapeArg($address) : '',
             $parts,
         ));
     }
@@ -385,5 +385,24 @@ final class Emate
     private function splitString(string $string): array
     {
         return explode(PHP_EOL, $string);
+    }
+
+    /**
+     * UTF-8 safe wrapper for escapeshellarg().
+     *
+     * PHP's escapeshellarg() strips non-ASCII characters (e.g. umlauts)
+     * when the LC_CTYPE locale is set to "C" or "POSIX", which is the
+     * default on macOS. This temporarily sets the locale to UTF-8.
+     */
+    private function escapeArg(string $argument): string
+    {
+        $previousLocale = setlocale(LC_CTYPE, '0');
+        setlocale(LC_CTYPE, 'en_US.UTF-8');
+
+        $escaped = escapeshellarg($argument);
+
+        setlocale(LC_CTYPE, $previousLocale ?: 'C');
+
+        return $escaped;
     }
 }

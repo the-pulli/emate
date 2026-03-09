@@ -660,6 +660,30 @@ it('can compose a mail with headers using fluent builder', function () {
         ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --header 'X-Priority: 1' --header 'X-Custom: value'");
 });
 
+it('preserves umlauts in recipient name', function () {
+    $options = [
+        'to' => new Address('sandra@example.com', 'Sandra Hönnemann'),
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+    ];
+
+    expect(emate($options))
+        ->toContain('Hönnemann');
+});
+
+it('preserves umlauts in recipient name passed as string', function () {
+    $options = [
+        'to' => 'Sandra Hönnemann <sandra@example.com>',
+        'from' => 'the@l33tdump.com',
+        'body' => 'Hello',
+        'subject' => 'Test',
+    ];
+
+    expect(emate($options))
+        ->toContain('Hönnemann');
+});
+
 it('can send a mail with encryption_mode smime as string', function () {
     $options = [
         'to' => 'PuLLi <the@pulli.dev>',
