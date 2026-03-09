@@ -2,6 +2,13 @@
 
 All notable changes to `emate` will be documented in this file.
 
+## v2.1.1 - 2026-03-09
+
+### Fix non-ASCII character stripping in shell arguments
+
+- Add UTF-8 safe `escapeshellarg()` wrapper to preserve umlauts and other non-ASCII characters (e.g. `ö`, `ü`, `ä`) in recipient names, subjects, body text, signatures, headers, and file paths
+- PHP's `escapeshellarg()` strips non-ASCII chars when `LC_CTYPE` is `"C"` or `"POSIX"` (default on macOS) — the new `escapeArg()` method temporarily sets the locale to `en_US.UTF-8` before escaping
+
 ## v2.1.0 - 2026-01-24
 
 ### Breaking Changes
@@ -28,6 +35,7 @@ All notable changes to `emate` will be documented in this file.
       ->signature('Best regards')
       ->header('X-Priority', '1')
       ->mail();
+  
   ```
 - **Signature support** — set text or reference existing signature by UUID via `'signature'` option or `->signature()` fluent setter.
 - **Custom headers** — add arbitrary email headers via `'headers'` option or `->header('Name', 'Value')` fluent setter.
