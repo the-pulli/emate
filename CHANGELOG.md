@@ -2,6 +2,14 @@
 
 All notable changes to `emate` will be documented in this file.
 
+## v2.1.2 - 2026-03-09
+
+### Fix: Locale-independent UTF-8 shell escaping
+
+- Replace `setlocale()` + `escapeshellarg()` approach with manual single-quote wrapping
+- The v2.1.1 fix relied on `en_US.UTF-8` locale being available, which fails on Docker containers (e.g. Laravel Cloud)
+- New implementation preserves all UTF-8 characters (umlauts, etc.) regardless of system locale
+
 ## v2.1.1 - 2026-03-09
 
 ### Fix non-ASCII character stripping in shell arguments
@@ -35,6 +43,7 @@ All notable changes to `emate` will be documented in this file.
       ->signature('Best regards')
       ->header('X-Priority', '1')
       ->mail();
+  
   
   ```
 - **Signature support** — set text or reference existing signature by UUID via `'signature'` option or `->signature()` fluent setter.
