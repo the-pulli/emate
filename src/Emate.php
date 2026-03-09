@@ -388,21 +388,18 @@ final class Emate
     }
 
     /**
-     * UTF-8 safe wrapper for escapeshellarg().
+     * UTF-8 safe shell argument escaping.
      *
      * PHP's escapeshellarg() strips non-ASCII characters (e.g. umlauts)
-     * when the LC_CTYPE locale is set to "C" or "POSIX", which is the
-     * default on macOS. This temporarily sets the locale to UTF-8.
+     * when the LC_CTYPE locale is set to "C" or "POSIX". This is the
+     * default on most Docker containers and macOS.
+     *
+     * Instead of relying on locale settings, this method implements the
+     * same single-quote wrapping that escapeshellarg() uses on Unix,
+     * without the locale-dependent character stripping.
      */
     private function escapeArg(string $argument): string
     {
-        $previousLocale = setlocale(LC_CTYPE, '0');
-        setlocale(LC_CTYPE, 'en_US.UTF-8');
-
-        $escaped = escapeshellarg($argument);
-
-        setlocale(LC_CTYPE, $previousLocale ?: 'C');
-
-        return $escaped;
+        return "'" . str_replace("'", "'\\''", $argument) . "'";
     }
 }
