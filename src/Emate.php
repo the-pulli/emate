@@ -263,10 +263,17 @@ final class Emate
 
     private function filesFlag(): string
     {
-        $files = $this->convert($this->files);
+        $files = array_filter(
+            $this->convert($this->files),
+            fn (string $file) => mb_strlen($file) > 0,
+        );
 
-        return implode('', array_map(
-            fn (string $file) => mb_strlen($file) > 0 ? ' '.$this->escapeArg($file) : '',
+        if ($files === []) {
+            return '';
+        }
+
+        return ' --'.implode('', array_map(
+            fn (string $file) => ' '.$this->escapeArg($file),
             $files,
         ));
     }

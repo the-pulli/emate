@@ -2,6 +2,13 @@
 
 All notable changes to `emate` will be documented in this file.
 
+## v2.1.4 - 2026-06-08
+
+### Fix attachments being swallowed by variadic flags
+
+- Insert the POSIX `--` separator before file positionals so they are no longer consumed by the preceding variadic flag (`--markup`, `--to`, `--from`, etc. are declared as `TEXT ...` in the emate CLI). v2.1.3 moved attachments to the end of the command but variadic flags still ate the trailing path.
+- Symptom: `Emate::compose()->markdown()->files($pdf)->mail()` opened a MailMate draft with the markup correctly set to Markdown, but **no attachment** — emate parsed the PDF path as a second value of `--markup` instead of as a positional `attachments` arg.
+
 ## v2.1.3 - 2026-06-08
 
 ### Fix attachment ordering so late flags are still parsed

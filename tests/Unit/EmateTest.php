@@ -223,7 +223,7 @@ it('can send a simple message with two files attached', function () {
     ];
 
     expect(emate($options))
-        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign '/home/rainbow.txt' '/home/pride.txt'");
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign -- '/home/rainbow.txt' '/home/pride.txt'");
 });
 
 it('can send a simple message with two files passed as array', function () {
@@ -236,7 +236,7 @@ it('can send a simple message with two files passed as array', function () {
     ];
 
     expect(emate($options))
-        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign '/home/rainbow.txt' '/home/pride.txt'");
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign -- '/home/rainbow.txt' '/home/pride.txt'");
 });
 
 it('can send a simple message with no files passed as an empty array', function () {
@@ -262,7 +262,7 @@ it('can send a simple message with two files passed as associative array', funct
     ];
 
     expect(emate($options))
-        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign '/home/rainbow.txt' '/home/pride.txt'");
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign -- '/home/rainbow.txt' '/home/pride.txt'");
 });
 
 it('can send a mail with cc recipients as string', function () {
@@ -458,7 +458,7 @@ it('can send a mail with a single file as string', function () {
     ];
 
     expect(emate($options))
-        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign '/home/rainbow.txt'");
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign -- '/home/rainbow.txt'");
 });
 
 it('properly escapes shell special characters in body', function () {
@@ -591,7 +591,7 @@ it('can compose a mail with cc, bcc, files, and replyTo using fluent builder', f
         ->debug();
 
     expect($command)
-        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --cc 'cc@example.com' --bcc 'bcc@example.com' --subject 'Test' --from 'the@l33tdump.com' --replyto 'reply@example.com' --noencrypt --nosign '/home/rainbow.txt'");
+        ->toBe("echo 'Hello' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --cc 'cc@example.com' --bcc 'bcc@example.com' --subject 'Test' --from 'the@l33tdump.com' --replyto 'reply@example.com' --noencrypt --nosign -- '/home/rainbow.txt'");
 });
 
 it('places attachments after all flags so late options are still parsed by emate', function () {
@@ -605,7 +605,7 @@ it('places attachments after all flags so late options are still parsed by emate
         ->debug();
 
     expect($command)
-        ->toBe("echo 'Hello **bold**' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --markup 'markdown' '/home/rainbow.txt'");
+        ->toBe("echo 'Hello **bold**' | \$HOME/bin/emate mailto --to '\"PuLLi\" <the@pulli.dev>' --subject 'Test' --from 'the@l33tdump.com' --noencrypt --nosign --markup 'markdown' -- '/home/rainbow.txt'");
 });
 
 it('can send a mail with a signature', function () {
