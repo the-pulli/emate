@@ -231,12 +231,12 @@ final class Emate
     {
         return $this->preamble()
             .$this->normalFlags()
-            .$this->filesFlag()
             .$this->booleanFlags()
             .$this->markdownFlag()
             .$this->signatureFlag()
             .$this->headersFlag()
-            .$this->encryptionModeFlag();
+            .$this->encryptionModeFlag()
+            .$this->filesFlag();
     }
 
     private function preamble(): string
