@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Pulli\Emate\Emate;
+use Pulli\Emate\EncryptionMode;
 use Symfony\Component\Mime\Address;
 
 function emate(array $options): string
@@ -480,7 +481,7 @@ it('can use EncryptionMode enum directly', function () {
         'body' => 'Hello',
         'subject' => 'Test',
         'encrypt' => true,
-        'encryption_mode' => \Pulli\Emate\EncryptionMode::SMIME,
+        'encryption_mode' => EncryptionMode::SMIME,
     ];
 
     expect(emate($options))
@@ -571,7 +572,7 @@ it('can compose a mail with encryption mode using fluent builder', function () {
         ->subject('Test')
         ->body('Hello')
         ->encrypt()
-        ->encryptionMode(\Pulli\Emate\EncryptionMode::SMIME)
+        ->encryptionMode(EncryptionMode::SMIME)
         ->debug();
 
     expect($command)
