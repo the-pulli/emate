@@ -231,12 +231,12 @@ final class Emate
     {
         return $this->preamble()
             .$this->normalFlags()
-            .$this->filesFlag()
             .$this->booleanFlags()
             .$this->markdownFlag()
             .$this->signatureFlag()
             .$this->headersFlag()
-            .$this->encryptionModeFlag();
+            .$this->encryptionModeFlag()
+            .$this->filesFlag();
     }
 
     private function preamble(): string
@@ -400,6 +400,6 @@ final class Emate
      */
     private function escapeArg(string $argument): string
     {
-        return "'" . str_replace("'", "'\\''", $argument) . "'";
+        return "'".str_replace("'", "'\\''", $argument)."'";
     }
 }

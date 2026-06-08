@@ -2,6 +2,13 @@
 
 All notable changes to `emate` will be documented in this file.
 
+## v2.1.3 - 2026-06-08
+
+### Fix attachment ordering so late flags are still parsed
+
+- Move file attachments to the end of the generated `emate mailto` command. Previously they appeared before late flags (`--markup`, `--encrypt`/`--noencrypt`, `--sign`/`--nosign`, `--signature`, `--header`, `--openpgp`/`--smime`), which caused the emate CLI parser to stop honoring those flags once it hit the first positional file path.
+- Symptom: `Emate::compose()->files($pdf)->markdown()->mail()` opened a MailMate draft with the attachment but the markup was set to "None" instead of "Markdown". Same class of bug for `sign`/`encrypt`/`signature`/`header`.
+
 ## v2.1.1 - 2026-03-09
 
 ### Fix non-ASCII character stripping in shell arguments
